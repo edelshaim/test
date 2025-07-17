@@ -2,15 +2,17 @@
 # Fuzzy search for a string in file names and contents with preview
 
 read -rp "Search term: " term
+read -rp "Directory to search (default: .): " dir
+dir=${dir:-.}
 
 # Create a temporary file for results
 results=$(mktemp)
 
 # Match file names (case-insensitive)
-fd -i "$term" >> "$results"
+fd -i "$term" "$dir" >> "$results"
 
 # Match file contents
-rg --color=always --line-number "$term" >> "$results"
+rg --color=always --line-number "$term" "$dir" >> "$results"
 
 # Use fzf with a preview using bat
 fzf --ansi \
